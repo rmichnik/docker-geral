@@ -4,9 +4,6 @@ services:
         image: tianon/true
         volumes:
             - ../:/var/www/html
-        extra_hosts:
-            - "web:10.0.0.1"
-
     ws:
         container_name: ws
         image: nginx:latest
@@ -17,11 +14,9 @@ services:
         volumes:
             - ./nginx/conf.d:/etc/nginx/conf.d
             - ./nginx/log:/var/nginx/logs
-        extra_hosts:
-            - "web:10.0.0.1"
         links:
-            - php
-            - redis
+            - php:php
+            - redis:redis
     php:
         container_name: php
         build:
@@ -30,10 +25,12 @@ services:
             - applications
         volumes:
             - ./php-fpm/conf.d:/usr/local/etc/php/conf.d
+        ports:
+            - "9000:9000"
     redis:
         container_name: redis
         build: ./redis
         volumes:
             - ./redis/data:/data
         ports:
-            - "63790:6379"
+            - "6379:6379"
