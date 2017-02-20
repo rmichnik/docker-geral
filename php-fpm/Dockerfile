@@ -3,7 +3,7 @@ FROM php:7-fpm
 MAINTAINER Renato Michnik de Carvalho <renato@rmc.inf.br>
 
 RUN apt-get -y update \
-    && apt-get -y install libxml2-dev libssl-dev unzip libicu-dev libaio1 libpng12-dev libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libldap2-dev \ 
+    && apt-get -y install libxml2-dev libssl-dev unzip libicu-dev libaio1 libpng12-dev libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libldap2-dev nodejs npm\ 
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap \
     && docker-php-ext-install -j$(nproc) iconv mcrypt \
@@ -26,6 +26,9 @@ RUN apt-get -y update \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && php -r "unlink('composer-setup.php');"
+
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+RUN npm install -g n && n latest
 
 ADD oracle/instantclient-basic-linux.x64-12.1.0.2.0.zip /tmp/
 ADD oracle/instantclient-sdk-linux.x64-12.1.0.2.0.zip /tmp/
